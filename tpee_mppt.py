@@ -1,5 +1,6 @@
 import can
 
+# convert unsigned to signed 16-bit int
 def convert_to_signed(unsigned):
     if unsigned <= 32767:
         return unsigned
@@ -8,10 +9,7 @@ def convert_to_signed(unsigned):
 
 # convert raw CAN frames from MPPT to human readable data
 # reference: https://www.tpee.nl/wp-content/uploads/2024/10/OpenSEC-firmware-Manual.pdf
-def mppt_data_readable(devID, message) -> str:
-
-    # figure out how to identify which message being sent, and then call diff function for each one?
-    
+def mppt_data_readable(devID, message) -> str:    
     message_data = message.data
     packet_ID = message.arbitration_id - devID
     
