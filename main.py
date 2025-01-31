@@ -1,3 +1,6 @@
+# TODO: add file output/logging functionality
+
+import can
 import pyCandapter
 import signal
 import time
@@ -29,20 +32,26 @@ if device == "0":
     mppt_id = input("Enter the MPPT Device ID (Press enter for default): ")
     if mppt_id == "":
         mppt_id = DEFAULT_MPPT_ID
+    mppt_id = int(mppt_id, 16) # convert to int cause python is ew
+    
+    # message to test if translation is working (remove for prod)
+    # test_message = can.Message(arbitration_id=0x200, data=[0x02, 0xB7, 0xFF, 0x8D, 0x0C, 0x8C, 0xFF, 0xCD], is_extended_id=False)
+    
+    # test_message = can.Message(arbitration_id=0x201, data=[0x02, 0x00, 0x00, 0x17, 0x17], is_extended_id=False)
+
+    test_string = mppt_data_readable(mppt_id, test_message)
+    print(test_string)
+    
     # loop to read CAN messages
+    '''
     while True:
-        print(chr(27) + "[2J") # clear the console
+        print(chr(27) + "[2J") # clear the console (maybe better to not have this?)
         print(f"CAN frames for MPPT at {mppt_id}:")
-        ''' message = candapter.readCANMessage()
+            message = candapter.readCANMessage()
             if message is not None:
-            print(message)'''
+            print(message)
         print("message")
-        time.sleep(1)
-        
-        
-        
-        
-        
+        time.sleep(1)'''
         
 elif device == "1":
     print("CAN frames for Motor Controller:")
