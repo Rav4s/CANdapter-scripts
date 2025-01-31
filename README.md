@@ -5,7 +5,7 @@ Scripts to convert input from a [CANdapter](https://www.ewertenergy.com/products
 Run ```pip3 install -r requirements.txt``` in your virtual environment to install the necessary dependencies.
 
 ## Usage
-Run ```py main.py``` and follow the prompts to select your device type and base address (Flags WIP).
+Run ```py main.py``` and follow the prompts to select your device type and base address (Flags WIP). To change the COM port, serial baud rate, or CAN baud rate, set the ```PORT```, ```SERIALBAUDRATE```, and ```CANBAUDRATE``` configuration variables.
 
 ## Acknowledgement
 pyCandapter.py is from https://github.com/Anay1440/pyCandapter developed by Anay Patil, used under the MIT License (thx goat).
