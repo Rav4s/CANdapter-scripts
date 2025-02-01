@@ -13,6 +13,8 @@ def mppt_data_readable(devID, message) -> str:
     message_data = message.data
     packet_ID = message.arbitration_id - devID
     
+    # TODO: proper error handling for malformed CAN messages
+    
     # packet IDs as defined in datasheet
     match packet_ID:
         case 0:            

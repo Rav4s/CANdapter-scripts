@@ -5,19 +5,31 @@ import can
 import pyCandapter
 import signal
 import time
+import argparse
 from tpee_mppt import mppt_data_readable
 from wavesculptor import wavesculptor_data_readable
 
-# change to CANdapter COM port, baud rate, and CAN bus speed (currently 125k for Daybreak)
-PORT = 'COM4'
-SERIALBAUDRATE = 9600
-CANBAUDRATE = 250000
+parser = argparse.ArgumentParser()
+# cli flags: -d DEVICE -p PORT -s SERIALBAUDRATE -c CANBAUDRATE -m MPPT_ID
+parser.add_argument("-d", "--device", help="Device (0 MPPT, 1 MoCo)")
+parser.add_argument("-p", "--port", help="COM Port")
+parser.add_argument("-s", "--serial", help="Serial Baud Rate", type=int)
+parser.add_argument("-c", "--can", help="CAN Baud Rate", type=int)
+parser.add_argument("-m", "--mppt", help="MPPT Base Address")
+args = parser.parse_args()
 
+# set vars using flags
+device = args.device
+port = args.port
+serialbaudrate = args.serial
+canbaudrate = args.can
+mppt_id = args.mppt
+
+# if flags unset, set default COM port, baud rate, and CAN bus speed (currently 125k for Daybreak)
+port = "COM4" if port is None else port
+serialbaudrate = 9600 if serialbaudrate is None else serialbaudrate
+canbaudrate = 250000 if canbaudrate is None else canbaudrate
 DEFAULT_MPPT_ID = "0x200"
-
-# create candapter instance
-candapter = pyCandapter.pyCandapter(PORT, SERIALBAUDRATE)
-candapter.openCANBus(CANBAUDRATE)
 
 # close CAN bus before terminating
 def signal_handler(sig, frame):
@@ -26,11 +38,20 @@ def signal_handler(sig, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
 
+# create candapter instance
+try:
+    candapter = pyCandapter.pyCandapter(port, serialbaudrate)
+    candapter.openCANBus(canbaudrate)    
+except Exception as e:
+    print("Failed to open CAN Bus. Exiting...")
+    print(f"Full Error: {e}")
+    exit(1)
+
 print("CANdapter Scripts for the TPEE SEC-B175-7A MPPT and Prohelion Wavesculptor 22 Motor Controller")
-device = input("Enter 0 for MPPT or 1 for Motor Controller: ")
+device = input("Enter 0 for MPPT or 1 for Motor Controller: ") if device is None else device
 
 if device == "0":
-    mppt_id = input("Enter the MPPT Device ID (Press enter for default): ")
+    mppt_id = input("Enter the MPPT Device ID (Press enter for default): ") if mppt_id is None else mppt_id
     if mppt_id == "":
         mppt_id = DEFAULT_MPPT_ID
     mppt_id_int = int(mppt_id, 16) # convert to int cause python is ew
@@ -41,12 +62,14 @@ if device == "0":
         message = candapter.readCANMessage()
         if message is not None:
             print(mppt_data_readable(mppt_id, message))
-            
+        
+        '''    
         # messages to test if translation is working (remove for prod)
-        '''test_message = can.Message(arbitration_id=0x200, data=[0x02, 0xB7, 0xFF, 0x8D, 0x0C, 0x8C, 0xFF, 0xCD], is_extended_id=False)
+        test_message = can.Message(arbitration_id=0x200, data=[0x02, 0xB7, 0xFF, 0x8D, 0x0C, 0x8C, 0xFF, 0xCD], is_extended_id=False)
         test_message = can.Message(arbitration_id=0x201, data=[0x02, 0x00, 0x00, 0x17, 0x17], is_extended_id=False)
         test_string = mppt_data_readable(mppt_id_int, test_message)
-        print(test_string)'''
+        print(test_string)
+        '''
         time.sleep(0.5)
         
 elif device == "1":
