@@ -28,8 +28,8 @@ mppt_id = args.mppt
 # if flags unset, set default COM port, baud rate, and CAN bus speed (currently 125k for Daybreak)
 port = "COM4" if port is None else port
 serialbaudrate = 9600 if serialbaudrate is None else serialbaudrate
-canbaudrate = 250000 if canbaudrate is None else canbaudrate
-DEFAULT_MPPT_ID = "0x200"
+canbaudrate = 125000 if canbaudrate is None else canbaudrate
+DEFAULT_MPPT_ID = 0x200
 
 # close CAN bus before terminating
 def signal_handler(sig, frame):
@@ -43,6 +43,7 @@ try:
     candapter = pyCandapter.pyCandapter(port, serialbaudrate)
     candapter.openCANBus(canbaudrate)    
 except Exception as e:
+#    candapter.closeCANBus()
     print("Failed to open CAN Bus. Exiting...")
     print(f"Full Error: {e}")
     exit(1)
@@ -61,7 +62,7 @@ if device == "0":
         # print(chr(27) + "[2J") # clear the console (maybe better to not have this?)
         message = candapter.readCANMessage()
         if message is not None:
-            print(mppt_data_readable(mppt_id, message))
+            print(mppt_data_readable(mppt_id_int, message))
         
         '''    
         # messages to test if translation is working (remove for prod)
