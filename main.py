@@ -43,7 +43,6 @@ try:
     candapter = pyCandapter.pyCandapter(port, serialbaudrate)
     candapter.openCANBus(canbaudrate)    
 except Exception as e:
-#    candapter.closeCANBus()
     print("Failed to open CAN Bus. Exiting...")
     print(f"Full Error: {e}")
     exit(1)
@@ -71,7 +70,7 @@ if device == "0":
         test_string = mppt_data_readable(mppt_id_int, test_message)
         print(test_string)
         '''
-        time.sleep(0.5)
+        time.sleep(0.5) # maybe change to 0.25 to oversample?
         
 elif device == "1":
     print("CAN frames for Motor Controller:")
@@ -82,4 +81,5 @@ elif device == "1":
             print(message)
 else:
     print("Invalid input. Exiting...")
+    candapter.closeCANBus()
     exit(1)

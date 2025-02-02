@@ -8,7 +8,10 @@ Run ```pip3 install -r requirements.txt``` in your virtual environment to instal
 Run ```py main.py``` and follow the prompts to select your device type and base address. To change the COM port, serial baud rate, or CAN baud rate, set the ```PORT```, ```SERIALBAUDRATE```, and ```CANBAUDRATE``` configuration variables. Alternatively, use the command line flags as outlined below for one-line execution:  
 ```
 -d DEVICE (0 for MPPT, 1 for Motor Controller)
-
+-p PORT (CANdapter COM Port)
+-s SERIAL (Serial Baud Rate)
+-c CAN (CAN Baud Rate)
+-m MPPT (MPPT Base Address)
 ```
 
 ## Acknowledgement
