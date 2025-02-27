@@ -16,12 +16,17 @@ def convert_to_signed(unsigned):
 def mppt_data_readable(devID, message) -> str:
     # dynamically update message id to match base+offset as defined in dbc file
     updated_id = message.arbitration_id - (devID - DEFAULT_MPPT_ID)
+    readable_message = ""
     try:
         decoded_message = mpptdb.decode_message(updated_id, message.data) # decode message using dbc
-        print(decoded_message)
-    except:
+        for i in decoded_message.items():
+            readable_message += str(i[0]) +": " + str(round(i[1], 3)) + "    "
+    except Exception as e:
+        #print(e)
         print("Failed to decode message!")
+    return readable_message
 
+'''
 # convert raw CAN frames from MPPT to human readable data
 # reference: https://www.tpee.nl/wp-content/uploads/2024/10/OpenSEC-firmware-Manual.pdf
 def mppt_data_readable1(devID, message) -> str:    
@@ -99,3 +104,5 @@ def mppt_data_readable1(devID, message) -> str:
             return output_string
         case _:
             return "Invalid packet ID"
+            
+'''
