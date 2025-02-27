@@ -65,12 +65,11 @@ if device == "0":
     # loop to read CAN messages
     while True:
 
-          
         # messages to test if translation is working (remove for prod)
-        message = can.Message(arbitration_id=0x200, data=[0x02, 0xB7, 0xFF, 0x8D, 0x0C, 0x8C, 0xFF, 0xCD], is_extended_id=False)
+        #message = can.Message(arbitration_id=0x200, data=[0x02, 0xB7, 0xFF, 0x8D, 0x0C, 0x8C, 0xFF, 0xCD], is_extended_id=False)
         #test_message = can.Message(arbitration_id=0x201, data=[0x02, 0x00, 0x00, 0x17, 0x17], is_extended_id=False)
         
-        #message = candapter.readCANMessage()
+        message = candapter.readCANMessage()
         if message is not None:
             print(mppt_data_readable(mppt_id_int, message))
         
