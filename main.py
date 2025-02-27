@@ -2,6 +2,7 @@
 
 import sys
 import can
+import cantools
 import pyCandapter
 import signal
 import time
