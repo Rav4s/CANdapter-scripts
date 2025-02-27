@@ -29,7 +29,7 @@ mppt_id = args.mppt
 port = "COM4" if port is None else port
 serialbaudrate = 9600 if serialbaudrate is None else serialbaudrate
 canbaudrate = 125000 if canbaudrate is None else canbaudrate
-DEFAULT_MPPT_ID = 0x200
+DEFAULT_MPPT_ID = "0x200"
 
 # close CAN bus before terminating
 def signal_handler(sig, frame):
