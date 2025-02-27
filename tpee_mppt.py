@@ -1,4 +1,8 @@
 import can
+import cantools
+
+DEFAULT_MPPT_ID = 0x200
+mpptdb = cantools.database.load_file('files/tpee_mppt.dbc')
 
 # convert unsigned to signed 16-bit int
 def convert_to_signed(unsigned):
@@ -9,7 +13,18 @@ def convert_to_signed(unsigned):
 
 # convert raw CAN frames from MPPT to human readable data
 # reference: https://www.tpee.nl/wp-content/uploads/2024/10/OpenSEC-firmware-Manual.pdf
-def mppt_data_readable(devID, message) -> str:    
+def mppt_data_readable(devID, message) -> str:
+    # dynamically update message id to match base+offset as defined in dbc file
+    updated_id = message.arbitration_id - (devID - DEFAULT_MPPT_ID)
+    try:
+        decoded_message = mpptdb.decode_message(updated_id, message.data) # decode message using dbc
+        print(decoded_message)
+    except:
+        print("Failed to decode message!")
+
+# convert raw CAN frames from MPPT to human readable data
+# reference: https://www.tpee.nl/wp-content/uploads/2024/10/OpenSEC-firmware-Manual.pdf
+def mppt_data_readable1(devID, message) -> str:    
     message_data = message.data
     packet_ID = message.arbitration_id - devID
     

@@ -64,19 +64,17 @@ if device == "0":
     print(f"\n\n\nCAN frames for MPPT at {mppt_id}:")
     # loop to read CAN messages
     while True:
-        # print(chr(27) + "[2J") # clear the console (maybe better to not have this?)
-        message = candapter.readCANMessage()
+
+          
+        # messages to test if translation is working (remove for prod)
+        message = can.Message(arbitration_id=0x200, data=[0x02, 0xB7, 0xFF, 0x8D, 0x0C, 0x8C, 0xFF, 0xCD], is_extended_id=False)
+        #test_message = can.Message(arbitration_id=0x201, data=[0x02, 0x00, 0x00, 0x17, 0x17], is_extended_id=False)
+        
+        #message = candapter.readCANMessage()
         if message is not None:
             print(mppt_data_readable(mppt_id_int, message))
         
-        '''    
-        # messages to test if translation is working (remove for prod)
-        test_message = can.Message(arbitration_id=0x200, data=[0x02, 0xB7, 0xFF, 0x8D, 0x0C, 0x8C, 0xFF, 0xCD], is_extended_id=False)
-        test_message = can.Message(arbitration_id=0x201, data=[0x02, 0x00, 0x00, 0x17, 0x17], is_extended_id=False)
-        test_string = mppt_data_readable(mppt_id_int, test_message)
-        print(test_string)
-        '''
-        time.sleep(0.5) # maybe change to 0.25 to oversample?
+        time.sleep(0.05) # oversampling so candapter FIFO doesn't fill up (do we even need a delay????)
         
 elif device == "1":
     ws_id = input("Enter the Motor Controller Device ID (Press enter for default): ") if ws_id is None else ws_id
@@ -95,6 +93,7 @@ elif device == "1":
         #message = candapter.readCANMessage()
         if message is not None:
             print(message)
+        time.sleep(0.05) # oversampling so candapter FIFO doesn't fill up (do we even need a delay????)
 else:
     print("Invalid input. Exiting...")
     candapter.closeCANBus()
